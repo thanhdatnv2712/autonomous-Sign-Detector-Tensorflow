@@ -1,19 +1,19 @@
 import tensorflow as tf
-import keras
-from keras.models import Sequential
-from keras.layers import Conv2D
-from keras.layers import MaxPooling2D
-from keras.layers import Flatten
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.preprocessing.image import ImageDataGenerator
+import tensorflow.keras as keras
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.layers import Flatten
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dropout
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 import numpy as np
-import keras,glob,os,sys,cv2
+import glob,os,sys,cv2
 
 class DataGenerator(keras.utils.Sequence):
     'Generates data for Keras'
-    def __init__(self, list_IDs, batch_size=32, dim=(48,48,3),
+    def __init__(self, list_IDs, batch_size=1, dim=(48,48,3),
                  n_classes=6):
         'Initialization'
         self.dim = dim
@@ -99,10 +99,13 @@ if __name__ == "__main__":
     classifier.add( keras.layers.Dropout(0.5))
     classifier.add( keras.layers.Dense(units = 6, activation = 'softmax'))
     # Compiling the CNN
-    classifier = keras.models.load_model("my_model.h5")
+    # classifier = keras.models.load_model("my_model.h5")
     classifier.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics = ['accuracy'])
 
     classifier.fit(training_set,
     steps_per_epoch = 4863//32,
-    epochs = 10)
-    classifier.save('my_model.h5')
+    epochs = 20)
+    # classifier.save('my_model.h5')
+    current_model_saved_name= "./model/best_classification"
+    tf.saved_model.save(classifier, current_model_saved_name)
+    # tf.keras.models.save_model("sign_classification.h5")
